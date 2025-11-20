@@ -1,0 +1,27 @@
+.add-product-btn {
+    background: linear-gradient(90deg, #ff3f6c, #ff8a80, rgb(255, 151, 46));
+    border: none !important;   
+    padding: 8px 20px;
+    font-weight: 600;
+    border-radius: 4px;
+    color: white;
+    transition: 0.3s;
+}
+
+.add-product-btn:hover {
+    background: linear-gradient(90deg, #e6325a, #ff6f70);
+    transform: scale(1.03);
+}
+
+
+.profile-icon {
+    display: flex;
+    flex-direction: column;  /* stack icon above text */
+    align-items: center;     /* center horizontally */
+    font-size: 14px;
+    color: #333;
+}
+
+.profile-icon span {
+    margin-top: 4px;  /* space between icon and text */
+}

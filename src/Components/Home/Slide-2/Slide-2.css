@@ -1,0 +1,28 @@
+ 
+.carousel .carousel-indicators {
+    bottom: -40px;   
+}
+
+.carousel-indicators button {
+  
+   width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #bcbcbc!important; 
+    border: none!important;
+    margin: 0 5px!important;
+    transition: background-color 0.3s!important; 
+     width: 8px!important; 
+    height: 8px!important;
+}
+ 
+.carousel-indicators .active {
+ background-color: #4d4d4d !important;  
+    width: 8px!important;   
+    height: 8px!important;
+}
+
+h4{
+    padding: 60px 0!important;
+    letter-spacing: 3.5px;
+}
