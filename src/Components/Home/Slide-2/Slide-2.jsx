@@ -51,3 +51,4 @@ const Slide2 = () => {
 };
 
 export default Slide2;
+

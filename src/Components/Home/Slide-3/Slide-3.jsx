@@ -22,7 +22,7 @@ const slides = [
   [slide11, slide12, slide13, slide14, slide15]
 ];
 
-const Slide2 = () => {
+const Slide3 = () => {
     return (
         <>
             <div className="container-fluid">
@@ -50,4 +50,4 @@ const Slide2 = () => {
     );
 };
 
-export default Slide2;
+export default Slide3;
