@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row, Col, Container, Card } from "react-bootstrap";
+import { Form, Button, Row, Col, Container, Card, InputGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Editproduct, updateProduct } from "../Services/Action/AddProductAction";
 import { useNavigate, useParams } from "react-router-dom";
+import { FaTag, FaDollarSign, FaStar, FaImage, FaBoxOpen } from "react-icons/fa";
 
 const EditProduct = () => {
     const { product } = useSelector((state) => state);
@@ -28,7 +29,7 @@ const EditProduct = () => {
 
     const [inputform, setinputform] = useState(initialState);
     const [inputErr, setinputErr] = useState({});
- 
+
     const handleChange = (e, index = null) => {
         const { name, value } = e.target;
 
@@ -48,7 +49,6 @@ const EditProduct = () => {
 
     const handleErrors = () => {
         const errors = {};
-
         if (!inputform.title.trim()) errors.titleErr = "Enter Product Name";
         if (!inputform.category) errors.categoryErr = "Please select category";
         if (!inputform.subcategory) errors.subcategoryErr = "Please select subcategory";
@@ -72,14 +72,10 @@ const EditProduct = () => {
 
         if (handleErrors()) {
             dispatch(updateProduct(inputform));
-            setinputform(initialState);
-
-            // Navigate back to previous page (like /man) instead of home
-            navigate(-1); 
+            navigate(-1); // Navigate back
         }
     };
 
-    // Brand selection based on category
     const getBrandOptions = () => {
         switch (inputform.category) {
             case "men":
@@ -125,28 +121,42 @@ const EditProduct = () => {
             <Row className="justify-content-center w-100">
                 <Col md={8} lg={6}>
                     <Card className="shadow-lg border-0 rounded-4">
+                        <Card.Header
+                            className="d-flex justify-content-between align-items-center text-white"
+                            style={{ backgroundColor: "#4a6cf7", fontSize: "1.25rem", fontWeight: "600" }}
+                        >
+                            Edit Product
+                            <Button
+                                variant="outline-light"
+                                style={{ borderRadius: "50%", width: "35px", height: "35px", padding: "0" }}
+                                onClick={() => navigate(-1)}
+                            >
+                                ✕
+                            </Button>
+                        </Card.Header>
+
                         <Card.Body className="p-4">
-                            <h3 className="text-center mb-4 fw-bold">Edit Product</h3>
-
-                            <Form onSubmit={handleSubmit}>
-                                {/* TITLE + CATEGORY */}
+                            <Form onSubmit={handleSubmit}> 
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Title</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>
+                                            <FaTag />
+                                        </InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            name="title"
+                                            value={inputform.title}
+                                            onChange={handleChange}
+                                            placeholder="Enter Product Title"
+                                        />
+                                    </InputGroup>
+                                    {inputErr.titleErr && (
+                                        <Form.Text className="text-danger">{inputErr.titleErr}</Form.Text>
+                                    )}
+                                </Form.Group>
+ 
                                 <Row>
-                                    <Col md={6}>
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Title</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                name="title"
-                                                value={inputform.title}
-                                                onChange={handleChange}
-                                                placeholder="Enter Product Title"
-                                            />
-                                            {inputErr.titleErr && (
-                                                <Form.Text className="text-danger">{inputErr.titleErr}</Form.Text>
-                                            )}
-                                        </Form.Group>
-                                    </Col>
-
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Category</Form.Label>
@@ -165,69 +175,66 @@ const EditProduct = () => {
                                             )}
                                         </Form.Group>
                                     </Col>
+
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Subcategory</Form.Label>
+                                            <Form.Select
+                                                name="subcategory"
+                                                value={inputform.subcategory}
+                                                onChange={handleChange}
+                                                disabled={!inputform.category}
+                                            >
+                                                <option value="">Select SubCategory</option>
+                                                {getsubCatagory().map((subcat, idx) => (
+                                                    <option key={idx} value={subcat}>
+                                                        {subcat}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                            {inputErr.subcategoryErr && (
+                                                <Form.Text className="text-danger">{inputErr.subcategoryErr}</Form.Text>
+                                            )}
+                                        </Form.Group>
+                                    </Col>
                                 </Row>
-
-                                {/* SUBCATEGORY + BRAND */}
-                                {inputform.category && (
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Subcategory</Form.Label>
-                                                <Form.Select
-                                                    name="subcategory"
-                                                    value={inputform.subcategory}
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="">Select SubCatagory</option>
-                                                    {getsubCatagory().map((brand, idx) => (
-                                                        <option key={idx} value={brand}>
-                                                            {brand}
-                                                        </option>
-                                                    ))}
-                                                </Form.Select>
-                                                {inputErr.subcategoryErr && (
-                                                    <Form.Text className="text-danger">
-                                                        {inputErr.subcategoryErr}
-                                                    </Form.Text>
-                                                )}
-                                            </Form.Group>
-                                        </Col>
-
-                                        <Col md={6}>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Brand</Form.Label>
-                                                <Form.Select
-                                                    name="brand"
-                                                    value={inputform.brand}
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="">Select Brand</option>
-                                                    {getBrandOptions().map((brand, idx) => (
-                                                        <option key={idx} value={brand}>
-                                                            {brand}
-                                                        </option>
-                                                    ))}
-                                                </Form.Select>
-                                                {inputErr.brandErr && (
-                                                    <Form.Text className="text-danger">{inputErr.brandErr}</Form.Text>
-                                                )}
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                )}
-
-                                {/* PRICE + STOCK */}
+ 
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Brand</Form.Label>
+                                    <Form.Select
+                                        name="brand"
+                                        value={inputform.brand}
+                                        onChange={handleChange}
+                                        disabled={!inputform.category}
+                                    >
+                                        <option value="">Select Brand</option>
+                                        {getBrandOptions().map((brand, idx) => (
+                                            <option key={idx} value={brand}>
+                                                {brand}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {inputErr.brandErr && (
+                                        <Form.Text className="text-danger">{inputErr.brandErr}</Form.Text>
+                                    )}
+                                </Form.Group>
+ 
                                 <Row>
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Price</Form.Label>
-                                            <Form.Control
-                                                type="number"
-                                                name="price"
-                                                value={inputform.price}
-                                                onChange={handleChange}
-                                                placeholder="Enter Price"
-                                            />
+                                            <InputGroup>
+                                                <InputGroup.Text>
+                                                    <FaDollarSign />
+                                                </InputGroup.Text>
+                                                <Form.Control
+                                                    type="number"
+                                                    name="price"
+                                                    value={inputform.price}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter Price"
+                                                />
+                                            </InputGroup>
                                             {inputErr.priceErr && (
                                                 <Form.Text className="text-danger">{inputErr.priceErr}</Form.Text>
                                             )}
@@ -237,76 +244,86 @@ const EditProduct = () => {
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Stock</Form.Label>
-                                            <Form.Control
-                                                type="number"
-                                                name="stock"
-                                                value={inputform.stock}
-                                                onChange={handleChange}
-                                                placeholder="Enter Stock"
-                                            />
+                                            <InputGroup>
+                                                <InputGroup.Text>
+                                                    <FaBoxOpen />
+                                                </InputGroup.Text>
+                                                <Form.Control
+                                                    type="number"
+                                                    name="stock"
+                                                    value={inputform.stock}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter Stock"
+                                                />
+                                            </InputGroup>
                                             {inputErr.stockErr && (
                                                 <Form.Text className="text-danger">{inputErr.stockErr}</Form.Text>
                                             )}
                                         </Form.Group>
                                     </Col>
                                 </Row>
-
-                                {/* DISCOUNT FIELD */}
-                                <Row>
-                                    <Col md={12}>
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Discount (%)</Form.Label>
-                                            <Form.Control
-                                                type="number"
-                                                name="discount"
-                                                value={inputform.discount}
-                                                onChange={handleChange}
-                                                placeholder="Enter Discount Percentage"
-                                            />
-                                            {inputErr.discountErr && (
-                                                <Form.Text className="text-danger">{inputErr.discountErr}</Form.Text>
-                                            )}
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-
-                                {/* IMAGE INPUTS */}
+ 
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Discount (%)</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>%</InputGroup.Text>
+                                        <Form.Control
+                                            type="number"
+                                            name="discount"
+                                            value={inputform.discount}
+                                            onChange={handleChange}
+                                            placeholder="Enter Discount Percentage"
+                                        />
+                                    </InputGroup>
+                                    {inputErr.discountErr && (
+                                        <Form.Text className="text-danger">{inputErr.discountErr}</Form.Text>
+                                    )}
+                                </Form.Group>
+ 
                                 <Row>
                                     {inputform.image.map((img, index) => (
                                         <Col md={6} key={index}>
                                             <Form.Group className="mb-3">
                                                 <Form.Label>{`Image ${index + 1}`}</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="image"
-                                                    value={img}
-                                                    onChange={(e) => handleChange(e, index)}
-                                                    placeholder={`Enter Image ${index + 1} URL`}
-                                                />
+                                                <InputGroup>
+                                                    <InputGroup.Text>
+                                                        <FaImage />
+                                                    </InputGroup.Text>
+                                                    <Form.Control
+                                                        type="text"
+                                                        name="image"
+                                                        value={img}
+                                                        onChange={(e) => handleChange(e, index)}
+                                                        placeholder={`Enter Image ${index + 1} URL`}
+                                                    />
+                                                </InputGroup>
                                             </Form.Group>
                                         </Col>
                                     ))}
-
                                     {inputErr.imageErr && (
                                         <Col md={12}>
                                             <Form.Text className="text-danger">{inputErr.imageErr}</Form.Text>
                                         </Col>
                                     )}
                                 </Row>
-
-                                {/* RATES */}
+ 
                                 <Row>
                                     <Col md={6}>
                                         <Form.Group className="mb-3">
                                             <Form.Label>Rating</Form.Label>
-                                            <Form.Control
-                                                type="number"
-                                                name="rating"
-                                                value={inputform.rates.rating}
-                                                onChange={handleChange}
-                                                placeholder="Enter Rating (1-5)"
-                                                max={5}
-                                            />
+                                            <InputGroup>
+                                                <InputGroup.Text>
+                                                    <FaStar />
+                                                </InputGroup.Text>
+                                                <Form.Control
+                                                    type="number"
+                                                    name="rating"
+                                                    value={inputform.rates.rating}
+                                                    onChange={handleChange}
+                                                    placeholder="Enter Rating (1-5)"
+                                                    max={5}
+                                                />
+                                            </InputGroup>
                                             {inputErr.ratingErr && (
                                                 <Form.Text className="text-danger">{inputErr.ratingErr}</Form.Text>
                                             )}
@@ -329,8 +346,7 @@ const EditProduct = () => {
                                         </Form.Group>
                                     </Col>
                                 </Row>
-
-                                {/* DESCRIPTION */}
+ 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Description</Form.Label>
                                     <Form.Control
@@ -345,8 +361,15 @@ const EditProduct = () => {
                                         <Form.Text className="text-danger">{inputErr.descriptionErr}</Form.Text>
                                     )}
                                 </Form.Group>
-
-                                <div className="text-center">
+ 
+                                <div className="d-flex justify-content-between mt-3">
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={() => navigate(-1)}
+                                        className="px-4 py-2"
+                                    >
+                                        Cancel
+                                    </Button>
                                     <Button
                                         type="submit"
                                         className="px-5 py-2 rounded-3 fw-semibold"
